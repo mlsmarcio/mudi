@@ -30,11 +30,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 		.and()
 			.formLogin( form -> form
 					.loginPage("/login")
-					.defaultSuccessUrl("/home", true)
+					.defaultSuccessUrl("/usuario/pedido", true)
 					.permitAll()
 					)
-					.logout(logout -> logout.logoutUrl("/logout"))
-					.csrf().disable();
+					.logout(logout -> logout.logoutUrl("/logout"));
+					//.csrf().disable();
 	}
 	
 	@Override
