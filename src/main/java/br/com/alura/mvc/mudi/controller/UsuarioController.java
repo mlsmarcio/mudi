@@ -31,7 +31,8 @@ public class UsuarioController {
 
 	@GetMapping("pedido/{status}")
 	public String porStatus(@PathVariable("status") String status, Model model, Principal principal) {
-		model.addAttribute("pedidos", pedidoRepository.findByStatusEUsuario(StatusPedido.valueOf(status.toUpperCase()), principal.getName()));
+		List<Pedido> pedidos = pedidoRepository.findByStatusEUsuario(StatusPedido.valueOf(status.toUpperCase()), principal.getName());
+		model.addAttribute("pedidos", pedidos);
 		model.addAttribute("status", status);
 		return "usuario/home";
 	}
