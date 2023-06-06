@@ -1,5 +1,7 @@
 package br.com.alura.mvc.mudi.api;
 
+
+import java.security.Principal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,10 +23,13 @@ public class PedidosRest {
 	private PedidoRepository pedidoRepository;
 	
 	@GetMapping("aguardando")
-	public List<Pedido> getPedidosAguardandoOfertas() {
+	public List<Pedido> getPedidosAguardandoOfertas(Principal principal) {
 		Sort sort = Sort.by("id").descending();
 		PageRequest paginacao = PageRequest.of(0, 10, sort);
-		return pedidoRepository.findByStatus(StatusPedido.AGUARDANDO, paginacao);
+		
+//		return pedidoRepository.findByStatus(StatusPedido.AGUARDANDO, paginacao);
+		
+		return pedidoRepository.findByStatusEOthersUsuario(principal.getName(), StatusPedido.AGUARDANDO, paginacao);
 	}
 
 }
