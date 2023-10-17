@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head th:replace="~{base :: head('Ofertas')}"></head>
+<body>
+
+	<div th:replace="~{base :: logo}"></div>
+	
+	<div class="container" id="pedido">
+		
+		<div th:replace="~{base :: titulo('Escolha uma Oferta')}"></div>
+		
+		<div class="card mb-3">
+			<div class="card-header alert-warning" th:text="${pedido.nomeProduto}">Nome do produto</div>
+			<div class="row ml-2">
+		
+				<div class="col-12 col-sm-8 mb-3">
+					<div>Descrição</div>
+					<div>
+						<textarea class="form-control" th:text="${pedido.descricao}" rows="" cols="">descrição do pedido</textarea>
+					</div>
+				</div>
+	
+				<div class="col-12 col-sm-4">
+					<div>
+						<a class="form-control" th:href="@{${pedido.urlProduto}}">
+							<img class="img-thumbnail" th:src="${pedido.urlImagem}" src="" />
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div class="card mb-3 small" th:each="oferta : ${pedido.ofertas}" >
+			<div class="card-body">
+				<div class="row">
+					<div class="col-md-5">
+						Valor: <span th:if="${oferta.valor} != null" th:text="${'R$ ' + #numbers.formatDecimal(oferta.valor,3,'POINT',2,'COMMA')}"></span>
+					</div>
+					<div class="col-md-7">
+						Data da entrega: <span th:text="${#temporals.format(oferta.dataDaEntrega, 'dd/MM/yyyy')}"></span>
+					</div>
+				</div>
+				<div>Comentário:</div>
+				<div>
+					<textarea class="form-control" th:text="${oferta.comentario}" rows="" cols=""></textarea>
+				</div>
+				<div class="row">
+					<a th:if="${oferta.id}" th:href="@{/oferta/aprova?id=} + ${oferta.id}" 
+					class="btn btn-outline-secondary my-2 my-sm-0 ml-3">Aprovar</a>
+				</div>
+			</div>
+		</div>
+	</div>	
+</body>
+</html>

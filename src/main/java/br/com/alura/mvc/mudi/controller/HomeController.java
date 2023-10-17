@@ -1,11 +1,12 @@
 package br.com.alura.mvc.mudi.controller;
 
 import java.security.Principal;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,13 +24,20 @@ public class HomeController {
 	private PedidoRepository pedidoRepository;
 	
 	@GetMapping
-	public String home(Model model, Principal principal) {
-	
-		Sort sort = Sort.by("dataDaEntrega").descending(); 
-		PageRequest paginacao = PageRequest.of(0, 2, sort);
-		List<Pedido> pedidos = pedidoRepository.findByStatus(StatusPedido.ENTREGUE, paginacao);
+	public String home(Model model, Principal principal, 
+			@PageableDefault(sort = "dataDaEntrega", direction = Direction.DESC, page = 0, size = 5) Pageable paginacao) {
+		
+//		Sort sort = Sort.by("dataDaEntrega").descending(); 
+//		PageRequest paginacao = PageRequest.of(0, 2, sort);
+		Page<Pedido> pedidos = pedidoRepository.findByStatus(StatusPedido.ENTREGUE, paginacao);
+		
+		
+		int totalPages = (int) Math.ceil(pedidos.getSize() / (double) paginacao.getPageSize());
+		
 		model.addAttribute("pedidos", pedidos);
+		model.addAttribute("currentPage", paginacao.getPageNumber());
+		model.addAttribute("totalPages", totalPages);
+		
 		return "home";
 	}
-
 }

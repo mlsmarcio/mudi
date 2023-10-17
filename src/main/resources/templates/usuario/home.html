@@ -17,16 +17,16 @@
 				<a th:classappend="${status} == 'aprovado' ? 'active'" class="nav-item nav-link" th:href="@{/usuario/pedido/aprovado}">Aprovado</a> 
 				<a th:classappend="${status} == 'entregue' ? 'active'"	class="nav-item nav-link" th:href="@{/usuario/pedido/entregue}">Entregue</a>
 			</div>
-			<a href="/pedido/formulario"><button
-					class="btn btn-outline-secondary my-2 my-sm-0">Novo</button></a>
+			<a href="/pedido/formulario"><button class="btn btn-outline-secondary my-2 my-sm-0">Novo</button></a>
 		</nav>
 
 		<div class="card mb-3" th:each="pedido : ${pedidos}">
 			
 			<th:block th:switch="${pedido.status.name()}">
-				<div th:case="'AGUARDANDO'" class="card-header alert-warning" th:text="${pedido.nomeProduto}">Nome do produto</div>
-				<div th:case="'APROVADO'" class="card-header alert-success" th:text="${pedido.nomeProduto}">Nome do produto</div>
-				<div th:case="'ENTREGUE'" class="card-header alert-dark" th:text="${pedido.nomeProduto}">Nome do produto</div>
+			
+				<div th:case="'AGUARDANDO'" class="card-header alert-warning" th:text="${pedido.id} + ${pedido.nomeProduto}">Nome do produto</div>
+				<div th:case="'APROVADO'" class="card-header alert-success" th:text="${pedido.id} + ${pedido.nomeProduto}">Nome do produto</div>
+				<div th:case="'ENTREGUE'" class="card-header alert-dark" th:text="${pedido.id} + ${pedido.nomeProduto}">Nome do produto</div>
 			</th:block>
 			
 			<div class="card-body">
@@ -44,25 +44,75 @@
 
 						<div>Produto:</div>
 						<div>
-							<input class="form-control" th:value="${pedido.urlProduto}"
+							<input class="form-control" th:value="${pedido.urlProduto}" readonly="readonly"
 								value="url do Produto" />
 						</div>
 
 						<div>Descrição</div>
 						<div>
-							<textarea class="form-control" th:text="${pedido.descricao}"
-								rows="" cols="">descrição do pedido</textarea>
+							<textarea class="form-control" th:text="${pedido.descricao}" readonly="readonly" rows="" cols="">
+								descrição do pedido
+							</textarea>
 						</div>
 					</div>
 
 					<div class="col-12 col-sm-4">
 						<div>
-							<img class="img-thumbnail" th:src="${pedido.urlImagem}" src="" />
+							<img class="img-thumbnail w-200 h-200" th:src="${pedido.urlImagem}" src="" />
 						</div>
 					</div>
 				</div>
+				<div class="row">
+					<a th:if="${pedido.possuiOfertas && pedido.status.name() == 'AGUARDANDO'}" th:href="@{/oferta/ver?id=}+${pedido.id}" 
+					class="btn btn-outline-secondary my-2 my-sm-0 ml-3" >Ver Ofertas</a>
+				</div>
 			</div>
 		</div>
+		
+		<nav aria-label="..." th:if="${totalPages > 0}">
+	  		<ul class="pagination">
+	  		
+	    		<li th:class="${currentPage == 0} ? 'page-item disabled' : 'page-item'">
+	      			<a th:if="${status != null}" th:href="@{'/usuario/pedido/' + ${status} + '?page=' + ${currentPage -1}}" class="page-link">&laquo; Previous</a>
+	      			<a th:unless="${status != null}" th:href="@{'/usuario/pedido?page=' + ${currentPage -1}}" class="page-link">&laquo; Previous</a>
+	    		</li>
+	    		
+	    		<li th:each="pageNumber : ${#numbers.sequence(1, totalPages)}" th:class="${pageNumber == currentPage+1} ? 'page-item active' : 'page-item'">
+            		<a th:if="${status != null}" th:href="@{'/usuario/pedido/' + ${status} + '?page=' + ${pageNumber-1}}" th:text="${pageNumber}" class="page-link">1</a>
+            		<a th:unless="${status != null}" th:href="@{'/usuario/pedido?page=' + ${pageNumber-1}}" th:text="${pageNumber}" class="page-link">1</a>
+		        </li>
+
+		        <li th:class="${currentPage+1 == totalPages} ? 'page-item disabled' : 'page-item'">
+		            <a class="page-link" th:if="${status != null}"  th:href="@{'/usuario/pedido/' + ${status} + '?page=' + ${currentPage + 1}}">Next &raquo;</a>
+		            <a class="page-link" th:unless="${status != null}"  th:href="@{'/usuario/pedido?page=' + ${currentPage + 1}}">Next &raquo;</a>
+		        </li>
+	  		</ul>
+		</nav>
+		
+		<!-- TESTE DE CÓDIGO -->
+		
+		<nav aria-label="..." th:if="${totalPages > 0}">
+	  		<ul class="pagination">
+	  		
+	    		<li th:class="${currentPage == 0} ? 'page-item disabled' : 'page-item'">
+	      			<a th:if="${status != null}" th:href="@{'/usuario/pedido/' + ${status} + '?page=' + ${currentPage -1}}" class="page-link">&laquo; Previous</a>
+	      			<a th:unless="${status != null}" th:href="@{'/usuario/pedido?page=' + ${currentPage -1}}" class="page-link">&laquo; Previous</a>
+	    		</li>
+
+	    		
+	    		<li th:each="pageNumber : ${#numbers.sequence(1, totalPages)}" th:class="${pageNumber == currentPage+1} ? 'page-item active' : 'page-item'">
+            		<a th:if="${status != null}" th:href="@{'/usuario/pedido/' + ${status} + '?page=' + ${pageNumber-1}}" th:text="${pageNumber}" class="page-link">1</a>
+            		<a th:unless="${status != null}" th:href="@{'/usuario/pedido?page=' + ${pageNumber-1}}" th:text="${pageNumber}" class="page-link">1</a>
+		        </li>
+
+		        <li th:class="${currentPage+1 == totalPages} ? 'page-item disabled' : 'page-item'">
+		            <a class="page-link" th:if="${status != null}"  th:href="@{'/usuario/pedido/' + ${status} + '?page=' + ${currentPage + 1}}">Next &raquo;</a>
+		            <a class="page-link" th:unless="${status != null}"  th:href="@{'/usuario/pedido?page=' + ${currentPage + 1}}">Next &raquo;</a>
+		        </li>
+	  		</ul>
+		</nav>
+		
+		
 	</div>
 </body>
 </html>

@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
+@SuppressWarnings("deprecation")
 public class InterceptadorDeAcessos extends HandlerInterceptorAdapter{
 	
 	public static List<Acesso> acessos = new ArrayList<>();
@@ -28,12 +29,12 @@ public class InterceptadorDeAcessos extends HandlerInterceptorAdapter{
 	}
 
 	@Override
-	public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex)
+	public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) 
 			throws Exception {
-		Acesso acesso = (Acesso)request.getAttribute("acesso");
-		acesso.duracao = Duration.between(acesso.data, LocalDateTime.now());
-		
-		acessos.add(acesso);
+			Acesso acesso = (Acesso)request.getAttribute("acesso");
+			acesso.duracao = Duration.between(acesso.data, LocalDateTime.now());
+			
+			acessos.add(acesso);
 	}
 	
 	public static class Acesso {

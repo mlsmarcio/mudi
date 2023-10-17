@@ -25,15 +25,6 @@ public class Pedido {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
 	private String nomeProduto;
 	private BigDecimal valorNegociado;
 	private LocalDate dataDaEntrega;
@@ -49,9 +40,17 @@ public class Pedido {
 	@JsonIgnore
 	private User user;
 	
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "pedido", fetch = FetchType.LAZY)
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "pedido", fetch = FetchType.EAGER)
 	@JsonIgnore
 	private List<Oferta> ofertas;
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
 
 	public User getUser() {
 		return user;
@@ -123,6 +122,10 @@ public class Pedido {
 
 	public void setOfertas(List<Oferta> ofertas) {
 		this.ofertas = ofertas;
+	}
+	
+	public boolean possuiOfertas() {
+		return this.ofertas.size() > 0;
 	}
 
 }
